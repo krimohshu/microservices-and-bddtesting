@@ -1,0 +1,110 @@
+{
+  "folders": [
+    {
+      "name": "📦 API Test App (Existing)",
+      "path": "springboot-api-test-cucumber"
+    },
+    {
+      "name": "🛍️ Product Service",
+      "path": "product-service"
+    },
+    {
+      "name": "👤 User Service",
+      "path": "user-service"
+    },
+    {
+      "name": "📋 Order Service",
+      "path": "order-service"
+    },
+    {
+      "name": "🔧 Common Utilities",
+      "path": "microservices-common"
+    }
+  ],
+  "settings": {
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.compile.nullAnalysis.mode": "automatic",
+    "java.saveActions.organizeImports": true,
+    "files.exclude": {
+      "**/target": true,
+      "**/.classpath": true,
+      "**/.project": true,
+      "**/.settings": true,
+      "**/.factorypath": true
+    },
+    "java.project.sourcePaths": [],
+    "maven.terminal.useJavaHome": true,
+    "spring-boot.ls.java.home": "/usr/local/opt/openjdk@17"
+  },
+  "extensions": {
+    "recommendations": [
+      "vscjava.vscode-java-pack",
+      "vscjava.vscode-spring-boot-dashboard",
+      "pivotal.vscode-spring-boot",
+      "redhat.java",
+      "vscjava.vscode-maven",
+      "alexkrechik.cucumberautocomplete",
+      "bierner.markdown-mermaid"
+    ]
+  },
+  "launch": {
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "type": "java",
+        "name": "🛍️ Product Service",
+        "request": "launch",
+        "mainClass": "com.microservices.product.ProductServiceApplication",
+        "projectName": "product-service",
+        "args": "--spring.profiles.active=dev",
+        "env": {
+          "SERVER_PORT": "8081"
+        }
+      },
+      {
+        "type": "java",
+        "name": "👤 User Service",
+        "request": "launch",
+        "mainClass": "com.microservices.user.UserServiceApplication",
+        "projectName": "user-service",
+        "args": "--spring.profiles.active=dev",
+        "env": {
+          "SERVER_PORT": "8082"
+        }
+      },
+      {
+        "type": "java",
+        "name": "📋 Order Service",
+        "request": "launch",
+        "mainClass": "com.microservices.order.OrderServiceApplication",
+        "projectName": "order-service",
+        "args": "--spring.profiles.active=dev",
+        "env": {
+          "SERVER_PORT": "8083"
+        }
+      },
+      {
+        "type": "java",
+        "name": "📦 API Test App",
+        "request": "launch",
+        "mainClass": "com.api.springboot.Application",
+        "projectName": "springboot-api-test-cucumber",
+        "args": "--spring.profiles.active=dev",
+        "env": {
+          "SERVER_PORT": "9091"
+        }
+      }
+    ],
+    "compounds": [
+      {
+        "name": "🚀 All Microservices",
+        "configurations": [
+          "🛍️ Product Service",
+          "👤 User Service",
+          "📋 Order Service"
+        ],
+        "stopAll": true
+      }
+    ]
+  }
+}
