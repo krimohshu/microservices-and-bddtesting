@@ -23,6 +23,7 @@
         <cucumber.version>7.14.0</cucumber.version>
         <rest-assured.version>5.3.2</rest-assured.version>
         <springdoc.version>2.2.0</springdoc.version>
+        <pact.version>4.6.3</pact.version>
     </properties>
     
     <dependencies>
@@ -113,6 +114,34 @@
             <version>${rest-assured.version}</version>
             <scope>test</scope>
         </dependency>
+        
+        <!-- Pact Consumer Testing -->
+        <!-- This dependency allows us to write consumer tests -->
+        <!-- It provides: PactBuilder, MockServer, annotations for defining contracts -->
+        <dependency>
+            <groupId>au.com.dius.pact.consumer</groupId>
+            <artifactId>junit5</artifactId>
+            <version>${pact.version}</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <!-- Pact Provider Testing -->
+        <!-- This allows order-service to also act as a provider for other services -->
+        <dependency>
+            <groupId>au.com.dius.pact.provider</groupId>
+            <artifactId>junit5spring</artifactId>
+            <version>${pact.version}</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <!-- Pact Core -->
+        <!-- Core Pact functionality and models -->
+        <dependency>
+            <groupId>au.com.dius.pact.core</groupId>
+            <artifactId>model</artifactId>
+            <version>${pact.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     
     <build>
@@ -153,6 +182,34 @@
                     <includes>
                         <include>**/CucumberTestRunner.java</include>
                     </includes>
+                </configuration>
+            </plugin>
+            
+            <!-- Pact Maven Plugin -->
+            <!-- This plugin allows us to publish pact files to the broker -->
+            <!-- Usage: mvn pact:publish -->
+            <plugin>
+                <groupId>au.com.dius.pact.provider</groupId>
+                <artifactId>maven</artifactId>
+                <version>${pact.version}</version>
+                <configuration>
+                    <!-- Pact Broker URL -->
+                    <pactBrokerUrl>http://localhost:9292</pactBrokerUrl>
+                    
+                    <!-- Authentication -->
+                    <pactBrokerUsername>pactbroker</pactBrokerUsername>
+                    <pactBrokerPassword>pactbroker</pactBrokerPassword>
+                    
+                    <!-- Directory where pact files are generated -->
+                    <pactDirectory>target/pacts</pactDirectory>
+                    
+                    <!-- Version of this service -->
+                    <projectVersion>${project.version}</projectVersion>
+                    
+                    <!-- Tags for organizing contracts (e.g., dev, staging, prod) -->
+                    <tags>
+                        <tag>dev</tag>
+                    </tags>
                 </configuration>
             </plugin>
         </plugins>
