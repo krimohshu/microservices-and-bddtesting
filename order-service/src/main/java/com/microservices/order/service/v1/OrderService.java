@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
+@Service("orderServiceV1")
 @RequiredArgsConstructor
 public class OrderService {
 
