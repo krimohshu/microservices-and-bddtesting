@@ -23,12 +23,27 @@ PIDS_DIR="$BASE_DIR/pids"
 mkdir -p "$LOGS_DIR"
 mkdir -p "$PIDS_DIR"
 
-# Service configuration
-declare -A SERVICES=(
-    ["user-service"]="8082"
-    ["product-service"]="8081"
-    ["order-service"]="8083"
+# Service configuration (compatible with Bash 3.2)
+# Format: service_name:port
+SERVICES=(
+    "user-service:8082"
+    "product-service:8081"
+    "order-service:8083"
 )
+
+# Function to get port for a service
+get_service_port() {
+    local service_name=$1
+    for entry in "${SERVICES[@]}"; do
+        local svc="${entry%%:*}"
+        local port="${entry##*:}"
+        if [ "$svc" = "$service_name" ]; then
+            echo "$port"
+            return 0
+        fi
+    done
+    return 1
+}
 
 # Function to print colored output
 print_info() {
@@ -146,11 +161,11 @@ main() {
     echo ""
 
     # Start services in order: user, product, then order
-    local services_order=("user-service" "product-service" "order-service")
     local failed_services=()
 
-    for service in "${services_order[@]}"; do
-        port=${SERVICES[$service]}
+    for entry in "${SERVICES[@]}"; do
+        local service="${entry%%:*}"
+        local port="${entry##*:}"
         if ! start_service "$service" "$port"; then
             failed_services+=("$service")
         fi
@@ -167,8 +182,9 @@ main() {
         print_success "All services started successfully!"
         echo ""
         print_info "Service Status:"
-        for service in "${services_order[@]}"; do
-            port=${SERVICES[$service]}
+        for entry in "${SERVICES[@]}"; do
+            local service="${entry%%:*}"
+            local port="${entry##*:}"
             if [ -f "$PIDS_DIR/${service}.pid" ]; then
                 pid=$(cat "$PIDS_DIR/${service}.pid")
                 print_success "  ✓ $service (PID: $pid, Port: $port)"

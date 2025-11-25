@@ -18,11 +18,12 @@ NC='\033[0m' # No Color
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PIDS_DIR="$BASE_DIR/pids"
 
-# Service ports
-declare -A SERVICES=(
-    ["user-service"]="8082"
-    ["product-service"]="8081"
-    ["order-service"]="8083"
+# Service configuration (compatible with Bash 3.2)
+# Format: service_name:port
+SERVICES=(
+    "user-service:8082"
+    "product-service:8081"
+    "order-service:8083"
 )
 
 # Function to print colored output
@@ -130,7 +131,8 @@ cleanup_resources() {
     fi
 
     # Optional: Clean up H2 database files
-    for service in "${!SERVICES[@]}"; do
+    for entry in "${SERVICES[@]}"; do
+        local service="${entry%%:*}"
         local db_dir="$BASE_DIR/$service/*.db"
         if ls $db_dir 1> /dev/null 2>&1; then
             print_info "Found database files for $service"
@@ -149,11 +151,12 @@ main() {
     echo ""
 
     # Stop services in reverse order: order, product, then user
-    local services_order=("order-service" "product-service" "user-service")
     local failed_services=()
+    local services_reverse=("order-service:8083" "product-service:8081" "user-service:8082")
 
-    for service in "${services_order[@]}"; do
-        port=${SERVICES[$service]}
+    for entry in "${services_reverse[@]}"; do
+        local service="${entry%%:*}"
+        local port="${entry##*:}"
         if ! stop_service "$service" "$port"; then
             failed_services+=("$service")
         fi
@@ -173,8 +176,9 @@ main() {
         print_success "All services stopped successfully!"
         echo ""
         print_info "Port Status:"
-        for service in "${!SERVICES[@]}"; do
-            port=${SERVICES[$service]}
+        for entry in "${SERVICES[@]}"; do
+            local service="${entry%%:*}"
+            local port="${entry##*:}"
             if lsof -Pi :$port -sTCP:LISTEN -t >/dev/null 2>&1; then
                 print_error "  ✗ Port $port ($service) - STILL IN USE"
             else
