@@ -23,7 +23,7 @@ PIDS_DIR="$BASE_DIR/pids"
 SERVICES=(
     "user-service:8082"
     "product-service:8081"
-    # "order-service:8083"  # TODO: Order service needs to be implemented
+    "order-service:8083"
 )
 
 # Function to print colored output
@@ -150,9 +150,9 @@ main() {
     print_info "=================================="
     echo ""
 
-    # Stop services in reverse order: product, then user
+    # Stop services in reverse order: order, product, then user
     local failed_services=()
-    local services_reverse=("product-service:8081" "user-service:8082")
+    local services_reverse=("order-service:8083" "product-service:8081" "user-service:8082")
 
     for entry in "${services_reverse[@]}"; do
         local service="${entry%%:*}"
