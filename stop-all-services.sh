@@ -24,6 +24,7 @@ SERVICES=(
     "user-service:8082"
     "product-service:8081"
     "order-service:8083"
+    "springboot-api-test-cucumber:9091"
 )
 
 # Function to print colored output
@@ -150,9 +151,9 @@ main() {
     print_info "=================================="
     echo ""
 
-    # Stop services in reverse order: order, product, then user
+    # Stop services in reverse order: api-test, order, product, then user
     local failed_services=()
-    local services_reverse=("order-service:8083" "product-service:8081" "user-service:8082")
+    local services_reverse=("springboot-api-test-cucumber:9091" "order-service:8083" "product-service:8081" "user-service:8082")
 
     for entry in "${services_reverse[@]}"; do
         local service="${entry%%:*}"

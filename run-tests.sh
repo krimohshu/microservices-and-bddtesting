@@ -25,6 +25,7 @@ declare -A SERVICES=(
     ["user-service"]="8082"
     ["product-service"]="8081"
     ["order-service"]="8083"
+    ["springboot-api-test-cucumber"]="9091"
 )
 
 # Function to print colored output
@@ -61,7 +62,7 @@ Run tests for microservices with optional tag filtering
 
 OPTIONS:
     -s, --service <name>       Run tests only for specific service
-                               Options: user-service, product-service, order-service, all (default)
+                               Options: user-service, product-service, order-service, springboot-api-test-cucumber, all (default)
     
     -t, --tags <tags>          Cucumber tags to filter tests (e.g., "@smoke", "not @Skip")
                                Multiple tags can be combined with "and", "or"
@@ -322,7 +323,7 @@ EOF
 
     # Build services section
     local services_html=""
-    for service in user-service product-service order-service; do
+    for service in user-service product-service order-service springboot-api-test-cucumber; do
         local service_report="$REPORTS_DIR/$service/$TIMESTAMP"
         if [ -d "$service_report" ]; then
             # Copy service reports to latest
@@ -381,7 +382,7 @@ main() {
     
     if [ "$SERVICE" = "all" ]; then
         # Run tests for all services
-        for service in user-service product-service order-service; do
+        for service in user-service product-service order-service springboot-api-test-cucumber; do
             if ! run_service_tests "$service"; then
                 failed_services+=("$service")
                 if [ "$FAIL_FAST" = "true" ]; then

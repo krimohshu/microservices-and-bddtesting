@@ -29,6 +29,7 @@ SERVICES=(
     "user-service:8082"
     "product-service:8081"
     "order-service:8083"
+    "springboot-api-test-cucumber:9091"
 )
 
 # Function to get port for a service
