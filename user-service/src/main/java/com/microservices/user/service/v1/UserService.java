@@ -85,6 +85,10 @@ public class UserService {
             user.getFirstName(),
             user.getLastName(),
             user.getPhone(),
+            user.getRole(),
+            user.getStatus(),
+            user.getActive(),
+            user.getVersion(),
             user.getCreatedAt(),
             user.getUpdatedAt()
         );

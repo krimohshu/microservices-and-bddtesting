@@ -16,6 +16,10 @@ public class UserResponse {
     private String firstName;
     private String lastName;
     private String phone;
+    private String role;
+    private String status;
+    private Boolean active;
+    private Long version;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

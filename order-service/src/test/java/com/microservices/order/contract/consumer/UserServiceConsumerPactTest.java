@@ -55,15 +55,24 @@ public class UserServiceConsumerPactTest {
     @Pact(consumer = "order-service", provider = "user-service")
     public V4Pact getUserByIdPact(PactDslWithProvider builder) {
         
-        // Define the expected response body structure
+        // Define the expected response body structure matching actual User Service API
         DslPart expectedResponseBody = new PactDslJsonBody()
-                // stringType() means: field must be string, but value can vary
-                .stringType("id", "1")                    // User ID
-                .stringType("name", "John Doe")           // User name
+                // Match the REAL User Service response structure
+                .numberType("id", 1)                      // User ID (number, not string)
+                .stringType("username", "johndoe")        // Username
                 .stringType("email", "john@example.com")  // Email
+                .stringType("firstName", "John")          // First name
+                .stringType("lastName", "Doe")            // Last name
+                .stringType("phone", "+1234567890")       // Phone number
+                .stringType("role", "USER")               // User role
                 .stringType("status", "ACTIVE")           // Account status
+                .booleanType("active", true)              // Active flag
+                .numberType("version", 0)                 // Optimistic locking version
                 // Regex pattern for ISO date format
                 .stringMatcher("createdAt", 
+                    "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.*", 
+                    "2024-01-01T10:00:00")
+                .stringMatcher("updatedAt", 
                     "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.*", 
                     "2024-01-01T10:00:00");
 
@@ -121,14 +130,21 @@ public class UserServiceConsumerPactTest {
         System.out.println("🔵 Response Status: " + response.getStatusCode());
         System.out.println("🔵 Response Body: " + response.getBody());
         
-        // Assert: Verify response is what Order Service expects
+        // Assert: Verify response matches the actual User Service structure
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().get("id")).isEqualTo("1");
-        assertThat(response.getBody().get("name")).isEqualTo("John Doe");
+        assertThat(response.getBody().get("id")).isEqualTo(1);  // ID is a number
+        assertThat(response.getBody().get("username")).isEqualTo("johndoe");
+        assertThat(response.getBody().get("firstName")).isEqualTo("John");
+        assertThat(response.getBody().get("lastName")).isEqualTo("Doe");
         assertThat(response.getBody().get("email")).isEqualTo("john@example.com");
+        assertThat(response.getBody().get("phone")).isEqualTo("+1234567890");
+        assertThat(response.getBody().get("role")).isEqualTo("USER");
         assertThat(response.getBody().get("status")).isEqualTo("ACTIVE");
+        assertThat(response.getBody().get("active")).isEqualTo(true);
         assertThat(response.getBody().get("createdAt")).isNotNull();
+        assertThat(response.getBody().get("updatedAt")).isNotNull();
+        assertThat(response.getBody().get("version")).isEqualTo(0);
         
         System.out.println("✅ TEST PASSED: Order Service got expected user data");
         System.out.println("✅ Pact file will be generated in target/pacts/");
