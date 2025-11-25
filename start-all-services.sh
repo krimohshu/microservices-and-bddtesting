@@ -28,7 +28,7 @@ mkdir -p "$PIDS_DIR"
 SERVICES=(
     "user-service:8082"
     "product-service:8081"
-    "order-service:8083"
+    # "order-service:8083"  # TODO: Order service needs to be implemented
 )
 
 # Function to get port for a service
